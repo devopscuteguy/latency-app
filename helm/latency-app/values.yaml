@@ -2,7 +2,7 @@ replicaCount: 2
 
 image:
   repository: devopscuteguy/example-app
-  tag: "develop_0.0.1_89"
+  tag: "develop_0.0.1_91"
   pullPolicy: Always
 
 service:
