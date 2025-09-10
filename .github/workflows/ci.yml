@@ -91,11 +91,11 @@ jobs:
         fi
         
         # Update values.yaml
-        sed -i "s/tag: .*/tag: \"$NEW_TAG\"/" helm/python-app/values.yaml
+        sed -i "s/tag: .*/tag: \"$NEW_TAG\"/" helm/latency-app/values.yaml
         
         # Commit changes
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add helm/python-app/values.yaml
+        git add helm/latency-app/values.yaml
         git commit -m "Update image tag to $NEW_TAG" || exit 0
         git push
