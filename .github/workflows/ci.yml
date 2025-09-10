@@ -30,15 +30,29 @@ jobs:
   build-and-push:
     needs: setup
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
     
     outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
-      image-digest: ${{ steps.build.outputs.digest }}
+      image-tag: ${{ steps.version.outputs.version }}
+      version: ${{ steps.version.outputs.version }}
     
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    
+    - name: Generate version
+      id: version
+      run: |
+        BRANCH=${GITHUB_REF#refs/heads/}
+        BUILD_NUMBER=${{ github.run_number }}
+        BASE_VERSION="0.0.1"  # You can change this base version
+        
+        VERSION="${BRANCH}_${BASE_VERSION}_${BUILD_NUMBER}"
+        
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Generated version: $VERSION"
+        echo "Branch: $BRANCH"
+        echo "Build number: $BUILD_NUMBER"
     
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -55,12 +69,10 @@ jobs:
       with:
         images: ${{ env.IMAGE_NAME }}
         tags: |
-          type=ref,event=branch
-          type=sha,prefix={{branch}}-
+          type=raw,value=${{ steps.version.outputs.version }}
           type=raw,value=latest,enable={{is_default_branch}}
     
     - name: Build and push
-      id: build
       uses: docker/build-push-action@v5
       with:
         context: .
@@ -74,7 +86,7 @@ jobs:
   update-helm-values:
     needs: build-and-push
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
     
     steps:
     - name: Checkout
@@ -84,11 +96,9 @@ jobs:
     
     - name: Update Helm values
       run: |
-        # Extract the SHA-based tag
-        NEW_TAG=$(echo "${{ needs.build-and-push.outputs.image-tag }}" | grep -o 'main-[a-f0-9]\{7\}' | head -1)
-        if [ -z "$NEW_TAG" ]; then
-          NEW_TAG="latest"
-        fi
+        NEW_TAG="${{ needs.build-and-push.outputs.version }}"
+        
+        echo "Updating Helm values with tag: $NEW_TAG"
         
         # Update values.yaml
         sed -i "s/tag: .*/tag: \"$NEW_TAG\"/" helm/latency-app/values.yaml
@@ -97,5 +107,5 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add helm/latency-app/values.yaml
-        git commit -m "Update image tag to $NEW_TAG" || exit 0
+        git commit -m "🚀 Deploy $NEW_TAG" || exit 0
         git push
