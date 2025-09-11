@@ -1,18 +1,41 @@
+# Application configuration
 replicaCount: 2
 
 image:
-  repository: devopscuteguy/example-app
-  tag: "main_0.0.1_153"
+  repository: devopscuteguy/latency-app  # Changed from example-app to latency-app
+  tag: "main_0.0.1_135"
   pullPolicy: Always
 
+# Add missing required fields
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Pod configuration
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+# Service configuration
 service:
   type: ClusterIP
   port: 80
   targetPort: 5000
 
+# Ingress configuration
 ingress:
   enabled: false
-  
+  className: ""
+  annotations: {}
+  hosts:
+    - host: latency-app.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+# Resources
 resources:
   limits:
     cpu: 500m
@@ -21,4 +44,21 @@ resources:
     cpu: 250m
     memory: 256Mi
 
+# Autoscaling (optional but good to have)
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+# Environment variables
 env: []
+
+# Node selection and tolerations
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# Volumes (if needed in future)
+volumes: []
+volumeMounts: []
