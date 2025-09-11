@@ -5,7 +5,7 @@ image:
   repository: devopscuteguy/latency-app  # Changed from example-app to latency-app
   tag: "main_0.0.1_135"
   repository: devopscuteguy/example-app
-  tag: "main_0.0.1_154"
+  tag: "main_0.0.1_156"
   pullPolicy: Always
 
 # Add missing required fields
