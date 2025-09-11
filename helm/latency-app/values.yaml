@@ -3,9 +3,9 @@ replicaCount: 2
 
 image:
   repository: devopscuteguy/latency-app  # Changed from example-app to latency-app
-  tag: "main_0.0.1_170"
+  tag: "main_0.0.1_171"
   repository: devopscuteguy/example-app
-  tag: "main_0.0.1_170"
+  tag: "main_0.0.1_171"
   pullPolicy: Always
 
 # Add missing required fields
