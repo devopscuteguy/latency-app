@@ -3,7 +3,7 @@ replicaCount: 1
 
 image:
   repository: devopscuteguy/example-app
-  tag: "main_0.0.1_218"
+  tag: "main_0.0.1_219"
   pullPolicy: Always
 
 # Add missing required fields
