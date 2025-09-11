@@ -1,9 +1,7 @@
 # Application configuration
-replicaCount: 2
+replicaCount: 1
 
 image:
-  repository: devopscuteguy/latency-app  # Changed from example-app to latency-app
-  tag: "main_0.0.1_178"
   repository: devopscuteguy/example-app
   tag: "main_0.0.1_178"
   pullPolicy: Always
